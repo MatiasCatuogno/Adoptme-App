@@ -1,0 +1,247 @@
+paths:
+ /api/pets/:
+  get:
+   summary: Obtiene todos las mascotas de la base de datos.
+   tags:
+    - Pets
+   security:
+    - cookieAuth: []
+   responses:
+    "200":
+     description: Las mascotas fueron obtenidas satisfactoriamente de la base de datos.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Mascotas obtenidas correctamente"
+         pets:
+          type: array
+          items:
+           $ref: "#/components/schemas/Pet"
+    "404":
+     description: No se han encontrado mascotas.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se encontraron las mascotas."
+    "500":
+     description: Error interno del servidor.
+  post:
+   summary: Crea una nueva mascota en la base de datos.
+   tags:
+    - Pets
+   security:
+    - cookieAuth: []
+   requestBody:
+    $ref: "#/components/requestBodies/updatedPet"
+   responses:
+    "201":
+     description: La mascota fue creada satisfactoriamente en la base de datos.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Mascota creada correctamente"
+         pet:
+          $ref: "#/components/schemas/Pet"
+    "404":
+     description: No se ha podido crear la mascota.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se pudo crear la mascota."
+    "500":
+     description: Error interno del servidor.
+ /api/pets/withimage/:
+  post:
+   summary: Crea una nueva mascota en la base de datos con una imagen.
+   tags:
+    - Pets
+   security:
+    - cookieAuth: []
+   requestBody:
+    required: true
+    content:
+     multipart/form-data:
+      schema:
+       type: object
+       properties:
+        petImage:
+         type: string
+         format: binary
+        name:
+         type: string
+        specie:
+         type: string
+        birthDate:
+         type: string
+         format: date
+        adopted:
+         type: boolean
+        owner:
+         type: string
+   responses:
+    "201":
+     description: La mascota fue creada satisfactoriamente en la base de datos.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Mascota creada correctamente"
+         pet:
+          $ref: "#/components/schemas/Pet"
+    "404":
+     description: No se ha podido crear la mascota.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se ha podido crear la mascota."
+    "500":
+     description: Error interno del servidor.
+ /api/pets/{pid}/:
+  put:
+   summary: Actualiza una mascota por _id en la base de datos.
+   tags:
+    - Pets
+   security:
+    - cookieAuth: []
+   parameters:
+    - name: pid
+      in: path
+      required: true
+      description: Id de la mascota a actualizar.
+      schema:
+       type: string
+   requestBody:
+    $ref: "#/components/requestBodies/updatedPet"
+   responses:
+    "200":
+     description: La mascota fue actualizada satisfactoriamente en la base de datos.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Mascota actualizada correctamente"
+         pet:
+          $ref: "#/components/schemas/Pet"
+    "404":
+     description: No se ha podido actualizar la mascota.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se ha podido actualizar la mascota."
+    "500":
+     description: Error interno del servidor.
+  delete:
+   summary: Elimina una mascota de la base de datos.
+   tags:
+    - Pets
+   security:
+    - cookieAuth: []
+   parameters:
+    - name: pid
+      in: path
+      required: true
+      description: Id de la mascota a eliminar.
+      schema:
+       type: string
+   responses:
+    "200":
+     description: La mascota fue eliminada satisfactoriamente en la base de datos.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Mascota eliminada correctamente"
+    "404":
+     description: No se ha podido eliminar la mascota.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se ha podido eliminar la mascota."
+    "500":
+     description: Error interno del servidor.
+components:
+ securitySchemes:
+  cookieAuth:
+   type: apiKey
+   in: cookie
+   name: coderCookie
+ schemas:
+  Pet:
+   type: object
+   properties:
+    _id:
+     type: string
+     description: Id autogenerado de mongo
+    name:
+     type: string
+     description: Nombre de la mascota
+    specie:
+     type: string
+     description: Especie de la mascota (gato, perro, etc.)
+    birthDate:
+     type: string
+     format: date
+     description: Fecha de nacimiento de la mascota
+    adopted:
+     type: boolean
+     default: false
+     description: Si la mascota fue adoptada o no
+    owner:
+     type: string
+     description: Id del dueño de la mascota
+    image:
+     type: string
+     description: URL de la imagen de la mascota
+   example:
+    _id: "64f8c8e2f1d2c3e4f5a6b7c8"
+    name: Firulais
+    specie: Perro
+    adopted: true
+    image: /public/pets/1624567890-firulais.jpg
+    birthDate: "2023-01-01"
+    owner: "64f8c8e2f1d2c3e4f5a6b7c8"
+ requestBodies:
+  updatedPet:
+   description: Datos para actualizar o crear una mascota.
+   required: true
+   content:
+    application/json:
+     schema:
+      $ref: "#/components/schemas/Pet"

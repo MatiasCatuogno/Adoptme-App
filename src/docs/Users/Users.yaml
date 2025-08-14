@@ -1,0 +1,245 @@
+paths:
+ /api/users:
+  get:
+   tags:
+    - Users
+   summary: Obtener todos los usuarios
+   description: Devuelve un array con todos los usuarios registrados.
+   security:
+    - cookieAuth: []
+   responses:
+    "200":
+     description: Lista de usuarios obtenida correctamente
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         status:
+          type: string
+          example: success
+         payload:
+          type: array
+          items:
+           $ref: "#/components/schemas/User"
+    "500":
+     description: Error interno del servidor
+ /api/users/{uid}:
+  get:
+   tags:
+    - Users
+   summary: Obtener un usuario por ID
+   security:
+    - cookieAuth: []
+   parameters:
+    - in: path
+      name: uid
+      schema:
+       type: string
+      required: true
+      description: ID del usuario
+   responses:
+    "200":
+     description: Usuario obtenido correctamente
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         status:
+          type: string
+          example: success
+         payload:
+          $ref: "#/components/schemas/User"
+    "404":
+     description: Usuario no encontrado
+    "500":
+     description: Error interno del servidor
+  put:
+   tags:
+    - Users
+   summary: Actualizar un usuario por ID
+   security:
+    - cookieAuth: []
+   parameters:
+    - in: path
+      name: uid
+      schema:
+       type: string
+      required: true
+      description: ID del usuario
+   requestBody:
+    required: true
+    content:
+     application/json:
+      schema:
+       $ref: "#/components/schemas/UserUpdate"
+   responses:
+    "200":
+     description: Usuario actualizado correctamente
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         status:
+          type: string
+          example: success
+         message:
+          type: string
+          example: User updated
+    "400":
+     description: Datos inválidos
+    "500":
+     description: Error interno del servidor
+  delete:
+   tags:
+    - Users
+   summary: Eliminar un usuario por ID
+   security:
+    - cookieAuth: []
+   parameters:
+    - in: path
+      name: uid
+      schema:
+       type: string
+      required: true
+      description: ID del usuario
+   responses:
+    "200":
+     description: Usuario eliminado correctamente
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         status:
+          type: string
+          example: success
+         message:
+          type: string
+          example: User deleted
+    "400":
+     description: ID inválido
+    "500":
+     description: Error interno del servidor
+ /api/users/{uid}/documents:
+  post:
+   tags:
+    - Users
+   summary: Subir documentos para un usuario
+   description: Permite subir uno o varios documentos para un usuario específico. Los archivos se deben enviar en formato multipart/form-data bajo el campo "documents".
+   security:
+    - cookieAuth: []
+   parameters:
+    - in: path
+      name: uid
+      schema:
+       type: string
+      required: true
+      description: ID del usuario
+   requestBody:
+    required: true
+    content:
+     multipart/form-data:
+      schema:
+       type: object
+       properties:
+        documents:
+         type: array
+         items:
+          type: string
+          format: binary
+   responses:
+    "200":
+     description: Documentos subidos correctamente
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         status:
+          type: string
+          example: success
+         payload:
+          type: array
+          items:
+           $ref: "#/components/schemas/Document"
+    "400":
+     description: Datos inválidos
+    "404":
+     description: Usuario no encontrado
+    "500":
+     description: Error interno del servidor
+components:
+ securitySchemes:
+  cookieAuth:
+   type: apiKey
+   in: cookie
+   name: coderCookie
+ schemas:
+  User:
+   type: object
+   properties:
+    _id:
+     type: string
+     example: 60d0fe4f5311236168a109ca
+    first_name:
+     type: string
+     example: Juan
+    last_name:
+     type: string
+     example: Pérez
+    email:
+     type: string
+     example: juan.perez@example.com
+    password:
+     type: string
+     example: $2b$10$...
+    role:
+     type: string
+     example: user
+    pets:
+     type: array
+     items:
+      type: object
+      properties:
+       _id:
+        type: string
+    documents:
+     type: array
+     items:
+      $ref: "#/components/schemas/Document"
+    last_connection:
+     type: string
+     format: date-time
+     example: 2024-06-25T12:34:56.789Z
+  UserUpdate:
+   type: object
+   properties:
+    first_name:
+     type: string
+    last_name:
+     type: string
+    email:
+     type: string
+    password:
+     type: string
+    role:
+     type: string
+    pets:
+     type: array
+     items:
+      type: object
+      properties:
+       _id:
+        type: string
+  Document:
+   type: object
+   properties:
+    name:
+     type: string
+     example: dni.pdf
+    reference:
+     type: string
+     example: /public/documents/1624567890-dni.pdf

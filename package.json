@@ -1,0 +1,41 @@
+{
+ "name": "adoptme",
+ "version": "1.0.0",
+ "description": "adoptme",
+ "main": "app.js",
+ "type": "module",
+ "author": "",
+ "license": "ISC",
+ "keywords": [],
+ "engines": {
+  "node": ">==18"
+ },
+ "repository": {
+  "url": "https://github.com/MatiasCatuogno/Adoptme-App"
+ },
+ "dependencies": {
+  "bcrypt": "^5.1.0",
+  "dotenv": "^16.5.0",
+  "winston": "^3.17.0",
+  "express": "^4.18.2",
+  "mongoose": "^6.7.5",
+  "multer": "^1.4.5-lts.1",
+  "jsonwebtoken": "^8.5.1",
+  "cookie-parser": "^1.4.6",
+  "swagger-jsdoc": "^6.2.8",
+  "swagger-ui-express": "^5.0.1"
+ },
+ "devDependencies": {
+  "chai": "^4.5.0",
+  "mocha": "^10.8.2",
+  "nodemon": "^3.1.10",
+  "supertest": "^7.1.1",
+  "artillery": "^2.0.23",
+  "@faker-js/faker": "^9.7.0"
+ },
+ "scripts": {
+  "start": "node ./src/app.js",
+  "dev": "nodemon ./src/app.js",
+  "test": "mocha ./test/**/*.test.js --exit"
+ }
+}

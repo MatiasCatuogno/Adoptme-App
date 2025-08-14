@@ -1,0 +1,151 @@
+paths:
+ /api/adoptions/:
+  get:
+   summary: Obtiene todas las adopciones de la base de datos.
+   tags:
+    - Adoptions
+   security:
+    - cookieAuth: []
+   responses:
+    "200":
+     description: Las adopciones fueron obtenidas satisfactoriamente.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Adopciones obtenidas correctamente"
+         adoptions:
+          type: array
+          items:
+           $ref: "#/components/schemas/Adoption"
+    "404":
+     description: No se han encontrado adopciones.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se encontraron adopciones."
+    "500":
+     description: Error interno del servidor.
+ /api/adoptions/{aid}:
+  get:
+   summary: Obtiene una adopción por su ID.
+   tags:
+    - Adoptions
+   security:
+    - cookieAuth: []
+   parameters:
+    - name: aid
+      in: path
+      required: true
+      description: Id de la adopción a consultar.
+      schema:
+       type: string
+   responses:
+    "200":
+     description: Adopción encontrada.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Adopción encontrada correctamente"
+         adoption:
+          $ref: "#/components/schemas/Adoption"
+    "404":
+     description: No se ha encontrado la adopción.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se encontró la adopción."
+    "500":
+     description: Error interno del servidor.
+ /api/adoptions/{uid}/{pid}:
+  post:
+   summary: Crea una nueva adopción.
+   tags:
+    - Adoptions
+   security:
+    - cookieAuth: []
+   parameters:
+    - name: uid
+      in: path
+      required: true
+      description: Id del usuario que adopta.
+      schema:
+       type: string
+    - name: pid
+      in: path
+      required: true
+      description: Id de la mascota a adoptar.
+      schema:
+       type: string
+   responses:
+    "201":
+     description: La adopción fue creada satisfactoriamente.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "Adopción creada correctamente"
+         adoption:
+          $ref: "#/components/schemas/Adoption"
+    "400":
+     description: Datos inválidos para crear la adopción.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         message:
+          type: string
+          example: "No se pudo crear la adopción."
+    "500":
+     description: Error interno del servidor.
+components:
+ securitySchemes:
+  cookieAuth:
+   type: apiKey
+   in: cookie
+   name: coderCookie
+ schemas:
+  Adoption:
+   type: object
+   properties:
+    _id:
+     type: string
+     description: Id autogenerado de la adopción
+    pet:
+     type: string
+     description: Id de la mascota adoptada
+    adopter:
+     type: string
+     description: Id del usuario que adopta
+    adoptionDate:
+     type: string
+     format: date
+     description: Fecha de la adopción
+    status:
+     type: string
+     description: Estado de la adopción (pendiente, aprobada, rechazada)
+   example:
+    _id: "65f8c8e2f1d2c3e4f5a6b7c8"
+    pet: "64f8c8e2f1d2c3e4f5a6b7c8"
+    adopter: "63f8c8e2f1d2c3e4f5a6b7c8"
+    adoptionDate: "2024-06-01"
+    status: "pendiente"
