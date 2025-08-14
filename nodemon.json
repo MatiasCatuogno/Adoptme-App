@@ -1,4 +1,0 @@
-{
- "ext": "js, mjs, cjs, json, yml, yaml",
- "ignore": ["node_modules/", "*.json"]
-}

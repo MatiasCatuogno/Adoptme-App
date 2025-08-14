@@ -8,10 +8,8 @@ import swaggerUiExpress from "swagger-ui-express";
 import { middlewareLogger, logger } from "./utils/index.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
-import loggerTest from './routes/loggers.router.js';
 import usersRouter from './routes/users.router.js';
 import petsRouter from './routes/pets.router.js';
-import mocksRouter from './routes/mocks.router.js';
 import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 
@@ -63,8 +61,6 @@ if(cluster.isPrimary) {
  app.use('/api/pets',petsRouter);
  app.use('/api/adoptions',adoptionsRouter);
  app.use('/api/sessions',sessionsRouter);
- app.use('/loggerTest', loggerTest);
- app.use('/api/mocks', mocksRouter);
  app.use(errorHandler);
 
  const server = app.listen(PORT,()=>{

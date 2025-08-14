@@ -1,7 +1,5 @@
-import { usersService, petsService } from "../services/index.js"
+import { usersService } from "../services/index.js"
 import { CustomError } from '../errors/CustomError.js';
-import { generateMockUsers } from '../mocks/users_mock.js';
-import { generateMockPets } from '../mocks/pets_mock.js';
 import { errorDictionary } from '../errors/errorDictionary.js';
 
 const getAllUsers = async(req,res,next)=>{
@@ -37,71 +35,6 @@ const getUser = async(req,res,next)=> {
   res.send({ status:"success", payload:user });
  } catch (error) {
   req.logger.fatal(`Error en el controller users, función getUser: ${error.message}`);
-  next(error);
- }
-};
-
-const mockingUsers = async(req,res,next)=>{
- try {
-  const mockUsers = await generateMockUsers(50);
-
-  if (!mockUsers) {
-   req.logger.error("Error al crear los usuarios.");
-   throw new CustomError("ERROR_CREATING_USERS", errorDictionary.ERROR_CREATING_PETS);
-  }
-
-  const users = await usersService.mockUsers(mockUsers);
-
-  if (!users) {
-   req.logger.error("Error al insertar los usuarios.");
-   throw new CustomError("ERROR_INSERT_PETS", errorDictionary.ERROR_INSERT_PETS);
-  }
-
-  req.logger.info("Usuarios creados correctamente");
-
-  res.send({ status:"success", payload:users });
- } catch (error) {
-  req.logger.fatal(`Error en el controller users, función mockingUsers: ${error.message}`);
-  next(error);
- }
-};
-
-const generateData = async(req,res,next)=>{
- try {
-  const { usersQuantity, petsQuantity } = req.body;
-  const mockUsers = await generateMockUsers(usersQuantity);
-
-  if (!mockUsers) {
-   req.logger.error("Error al crear los usuarios.");
-   throw new CustomError("COULDNT_CREATE_USERS", errorDictionary.COULDNT_CREATE_USERS);
-  }
-
-  const mockPets = generateMockPets(petsQuantity);
-
-  if (!mockPets) {
-   req.logger.error("Error al crear las mascotas.");
-   throw new CustomError("COULDNT_CREATE_PETS", errorDictionary.COULDNT_CREATE_PETS);
-  }
-
-  const users = await usersService.mockUsers(mockUsers);
-
-  if (!users) {
-   req.logger.error("Error al insertar los usuarios.");
-   throw new CustomError("ERROR_INSERT_USERS", errorDictionary.ERROR_INSERT_USERS);
-  }
-
-  const pets = await petsService.mockPets(mockPets);
-
-  if (!pets) {
-   req.logger.error("Error al insertar las mascotas.");
-   throw new CustomError("ERROR_INSERT_PETS", errorDictionary.ERROR_INSERT_PETS);
-  }
-
-  req.logger.info("Datos creados correctamente");
-
-  res.send({ status: "success", message: "Datos creados correctamente" });
- } catch (error) {
-  req.logger.fatal(`Error en el controller users, función generateData: ${error.message}`);
   next(error);
  }
 };
@@ -196,4 +129,4 @@ const deleteUser = async(req,res,next)=>{
  }
 };
 
-export default { deleteUser, getAllUsers, getUser, updateUser, mockingUsers, generateData, postUserDocuments };
+export default { deleteUser, getAllUsers, getUser, updateUser, postUserDocuments };

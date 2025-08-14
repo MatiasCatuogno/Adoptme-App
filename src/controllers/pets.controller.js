@@ -1,7 +1,6 @@
 import PetDTO from "../dto/Pet.dto.js";
 import { CustomError } from '../errors/CustomError.js';
 import { errorDictionary } from '../errors/errorDictionary.js';
-import { generateMockPets } from '../mocks/pets_mock.js';
 import { petsService } from "../services/index.js"
 import __dirname from "../utils/index.js";
 
@@ -19,31 +18,6 @@ const getAllPets = async(req,res,next)=>{
   res.send({ status:"success", payload:pets });
  } catch (error) {
   req.logger.fatal(`Error en el controller pets, función getAllPets: ${error.message}`);
-  next(error);
- }
-};
-
-const mockingPets = async(req,res,next)=>{
- try {
-  const mockPets = generateMockPets(100);
-
-  if (!mockPets) {
-   req.logger.error("Error al crear las mascotas.");
-   throw new CustomError("ERROR_CREATING_PETS", errorDictionary.ERROR_CREATING_PETS);
-  }
-
-  const pets = await petsService.mockPets(mockPets);
-
-  if (!pets) {
-   req.logger.error("Error al insertar las mascotas.");
-   throw new CustomError("ERROR_INSERT_PETS", errorDictionary.ERROR_INSERT_PETS);
-  }
-
-  req.logger.info("Mascotas creadas correctamente");
-
-  res.send({ status:"success", payload:pets });
- } catch (error) {
-  req.logger.fatal(`Error en el controller pets, función mockingPets: ${error.message}`);
   next(error);
  }
 };
@@ -174,4 +148,4 @@ const createPetWithImage = async(req,res,next)=>{
  }
 };
 
-export default { getAllPets, mockingPets, createPet, updatePet, deletePet, createPetWithImage };
+export default { getAllPets, createPet, updatePet, deletePet, createPetWithImage };
